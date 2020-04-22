@@ -1,51 +1,66 @@
-import React from 'react'
-import { Link, graphql } from 'gatsby'
-import Masonry from 'react-masonry-component'
-import Img from 'gatsby-image'
-import Layout from "../components/layout"
+import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
+import Header from '../components/header';
+import Container from '../components/container';
+import MoreStories from '../components/more-stories';
+import HeroPost from '../components/hero-post';
+import Layout from '../components/layout';
+import SectionSeparator from '../components/section-separator';
 
-const IndexPage = ({ data }) => (
-  <Layout>
-    <Masonry className="showcase">
-      {data.allDatoCmsWork.edges.map(({ node: work }) => (
-        <div key={work.id} className="showcase__item">
-          <figure className="card">
-            <Link to={`/works/${work.slug}`} className="card__image">
-              <Img fluid={work.coverImage.fluid} />
-            </Link>
-            <figcaption className="card__caption">
-              <h6 className="card__title">
-                <Link to={`/works/${work.slug}`}>{work.title}</Link>
-              </h6>
-              <div className="card__description">
-                <p>{work.excerpt}</p>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-      ))}
-    </Masonry>
-  </Layout>
-)
-
-export default IndexPage
-
-export const query = graphql`
-  query IndexQuery {
-    allDatoCmsWork(sort: { fields: [position], order: ASC }) {
-      edges {
-        node {
+const Index = () => {
+  const { allDatoCmsPost: { nodes: posts }, datoCmsHome: { coverImage: homeCoverImage } } = useStaticQuery(graphql`
+    query IndexQuery {
+      datoCmsHome {
+        coverImage {
+          url
+        }
+      }
+      allDatoCmsPost(sort: { fields: [position], order: ASC }, filter: {locale: {eq: "en"}}) {
+        nodes {
           id
-          title
           slug
+          title
           excerpt
           coverImage {
-            fluid(maxWidth: 450, imgixParams: { fm: "jpg", auto: "compress" }) {
+            fluid(maxWidth: 600, imgixParams: { fm: "jpg", auto: "compress" }) {
               ...GatsbyDatoCmsSizes
             }
+          }
+          date,
+          tags {
+            name
           }
         }
       }
     }
-  }
-`
+  `);
+
+  const heroPost = posts[0];
+  const morePosts = posts.slice(1);
+  const {
+    title, coverImage, date, slug, excerpt, tags, author,
+  } = heroPost;
+
+  return (
+    <Layout>
+      <Header image={homeCoverImage} />
+      <Container>
+        {heroPost && (
+          <HeroPost
+            title={title}
+            coverImage={coverImage}
+            date={date}
+            author={author}
+            slug={slug}
+            excerpt={excerpt}
+            tags={tags}
+          />
+        )}
+        <SectionSeparator />
+        {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+      </Container>
+    </Layout>
+  );
+};
+
+export default Index;
