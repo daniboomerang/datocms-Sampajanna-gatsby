@@ -1,11 +1,11 @@
 {
-  "name": "Gatsby Portfolio Website",
-  "description": "Simple portfolio website built with Gatsby.js and DatoCMS source plugin",
-  "previewImage": "https://www.datocms-assets.com/205/1584546486-screen-shot-2020-03-18-at-16-47-38-fullpage.png?crop=top&fit=crop&h=500&w=600&auto=format",
+  "name": "Sampajañña",
+  "description": "Sampajañña is my personal blog. A place to express through words and drawings those ideas that might arise in the journey to deep diving into stillness.",
+  "previewImage": "https://www.datocms-assets.com/25003/1587129568-oefnerblackhole6byfabian-oefner600480.jpg",
   "datocmsProjectId": "604",
   "deploymentType": "static",
   "buildCommand": "yarn build",
   "datocmsApiTokenEnvName": "DATO_API_TOKEN",
   "buildDirectory": "public",
-  "livePreviewUrl": "https://adoring-carson-24f43a.netlify.com/"
+  "livePreviewUrl": "https://thirsty-allen-1ea1f9.netlify.app"
 }

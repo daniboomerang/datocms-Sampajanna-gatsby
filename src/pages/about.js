@@ -1,50 +1,53 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import { HelmetDatoCms } from 'gatsby-source-datocms'
-import Img from 'gatsby-image'
-import Layout from "../components/layout"
+import React from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import { HelmetDatoCms } from 'gatsby-source-datocms';
+import Layout from '../components/layout';
+import Container from '../components/container';
+import Header from '../components/header';
+import PostBar from '../components/post-bar';
+import PostBody from '../components/post-body';
 
-const About = ({ data: { about } }) => (
-  <Layout>
-    <article className="sheet">
-      <HelmetDatoCms seo={about.seoMetaTags} />
-      <div className="sheet__inner">
-        <h1 className="sheet__title">{about.title}</h1>
-        <p className="sheet__lead">{about.subtitle}</p>
-        <div className="sheet__gallery">
-          <Img fluid={about.photo.fluid} />
-        </div>
-        <div
-          className="sheet__body"
-          dangerouslySetInnerHTML={{
-            __html: about.bioNode.childMarkdownRemark.html,
-          }}
-        />
-      </div>
-    </article>
-  </Layout>
-)
-
-export default About
-
-export const query = graphql`
-  query AboutQuery {
-    about: datoCmsAboutPage {
-      seoMetaTags {
-        ...GatsbyDatoCmsSeoMetaTags
-      }
-      title
-      subtitle
-      photo {
-        fluid(maxWidth: 600, imgixParams: { fm: "jpg", auto: "compress" }) {
-          ...GatsbyDatoCmsSizes
+const About = () => {
+  const data = useStaticQuery(graphql`
+    query AboutQuery {
+      datoCmsAboutPage(locale: {eq: "en"}) {
+        seoMetaTags {
+          ...GatsbyDatoCmsSeoMetaTags
         }
-      }
-      bioNode {
-        childMarkdownRemark {
-          html
+        title
+        subtitle
+        contentNode {
+          childMarkdownRemark {
+            html
+          }
+        }
+        coverImage {
+          url
         }
       }
     }
-  }
-`
+  `);
+
+  const { datoCmsAboutPage } = data;
+  const {
+    seoMetaTags,
+    title,
+    contentNode,
+    coverImage,
+  } = datoCmsAboutPage;
+
+  return (
+    <Layout>
+      <HelmetDatoCms seo={seoMetaTags} />
+      <Header image={coverImage} />
+      <article>
+        <PostBar postTitle={title} />
+        <Container>
+          <PostBody contentNode={contentNode} />
+        </Container>
+      </article>
+    </Layout>
+  );
+};
+
+export default About;
